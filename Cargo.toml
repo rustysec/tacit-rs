@@ -1,0 +1,21 @@
+[package]
+name = "tacit"
+version = "0.1.0"
+authors = ["rustysec <russ@infocyte.com>"]
+edition = "2018"
+description = "A simple yet powerful logging framework focused on obviousness and structure."
+
+[dependencies]
+chrono = "0.4"
+log = { version = "0.4", features = [ "std" ] }
+parking_lot = { version = "0.11" }
+serde = { version = "1", features = [ "derive"], optional = true }
+serde_json = { version = "1", optional = true }
+
+[dev-dependencies]
+reqwest = { version = "0.11", default-features = false, features = [ "rustls-tls", "blocking" ] }
+
+[features]
+default = [ "json", "threaded" ]
+json = [ "serde", "serde_json" ]
+threaded = []
