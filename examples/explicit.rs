@@ -3,7 +3,6 @@ use tacit::Logger;
 fn main() {
     let json_logger = tacit::JsonLogger::default()
         .with_module_level_filter("explicit".into(), log::LevelFilter::Trace)
-        .with_level_filter(log::LevelFilter::Off)
         .with_explicit_logging();
 
     tacit::new().with_logger(json_logger).log().unwrap();

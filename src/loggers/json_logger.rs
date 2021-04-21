@@ -64,18 +64,8 @@ impl<O: TacitOutput> crate::Logger for JsonLogger<O> {
         self.max_level = level;
     }
 
-    fn with_level_filter(mut self, level: log::LevelFilter) -> Self {
-        self.set_level_filter(level);
-        self
-    }
-
     fn set_module_level_filter(&mut self, module: String, level: log::LevelFilter) {
         self.module_levels.insert(module, level);
-    }
-
-    fn with_module_level_filter(mut self, module: String, level: log::LevelFilter) -> Self {
-        self.set_module_level_filter(module, level);
-        self
     }
 
     fn add_fn_prop(&mut self, name: String, prop: fn(&Record) -> StaticProperty) {
@@ -83,18 +73,8 @@ impl<O: TacitOutput> crate::Logger for JsonLogger<O> {
             .push((name, Property::Function(Box::new(prop))));
     }
 
-    fn with_fn_prop(mut self, name: String, prop: fn(&Record) -> StaticProperty) -> Self {
-        self.add_fn_prop(name, prop);
-        self
-    }
-
     fn add_prop(&mut self, name: String, prop: StaticProperty) {
         self.default_props.push((name, Property::Static(prop)));
-    }
-
-    fn with_prop(mut self, name: String, prop: StaticProperty) -> Self {
-        self.add_prop(name, prop);
-        self
     }
 
     fn explicit_logging(&mut self) {
@@ -127,14 +107,15 @@ impl<O: TacitOutput> log::Log for JsonLogger<O> {
             .sorted_module_levels
             .iter()
             .find(|(item, _level)| module.starts_with(item))
-            .map(|(_item, level)| level)
-            .unwrap_or(&self.max_level);
+            .map(|(_item, level)| level);
 
-        if self.explicit {
-            &LevelFilter::Off != level
+        let level = if self.explicit {
+            level.unwrap_or(&LevelFilter::Off)
         } else {
-            &self.max_level <= level
-        }
+            level.unwrap_or(&self.max_level)
+        };
+
+        level != &LevelFilter::Off && level >= &self.max_level
     }
 
     fn log(&self, record: &Record) {

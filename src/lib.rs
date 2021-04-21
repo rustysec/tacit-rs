@@ -17,33 +17,49 @@ pub trait Logger: Log {
     fn set_level_filter(&mut self, level: log::LevelFilter);
 
     /// Set the `LevelFilter` for the `Logger`, useful for chaining operations
-    fn with_level_filter(self, level: log::LevelFilter) -> Self
+    fn with_level_filter(mut self, level: log::LevelFilter) -> Self
     where
-        Self: Sized;
+        Self: Sized,
+    {
+        self.set_level_filter(level);
+        self
+    }
 
     /// Set the `LevelFilter` for a particular module name.
     fn set_module_level_filter(&mut self, module: String, level: log::LevelFilter);
 
     /// Set the `LevelFilter` for a particular module name. Useful for chaining operations.
-    fn with_module_level_filter(self, module: String, level: log::LevelFilter) -> Self
+    fn with_module_level_filter(mut self, module: String, level: log::LevelFilter) -> Self
     where
-        Self: Sized;
+        Self: Sized,
+    {
+        self.set_module_level_filter(module, level);
+        self
+    }
 
     /// Add a dynamic property to the logging output.
     fn add_fn_prop(&mut self, name: String, prop: fn(&Record) -> StaticProperty);
 
     /// Add a dynamic property to the logging output. Useful for chaining operations.
-    fn with_fn_prop(self, name: String, prop: fn(&Record) -> StaticProperty) -> Self
+    fn with_fn_prop(mut self, name: String, prop: fn(&Record) -> StaticProperty) -> Self
     where
-        Self: Sized;
+        Self: Sized,
+    {
+        self.add_fn_prop(name, prop);
+        self
+    }
 
     /// Add a static property to the logging output.
     fn add_prop(&mut self, name: String, prop: StaticProperty);
 
     /// Add a static property to the logging output. Useful for chaining operations.
-    fn with_prop(self, name: String, prop: StaticProperty) -> Self
+    fn with_prop(mut self, name: String, prop: StaticProperty) -> Self
     where
-        Self: Sized;
+        Self: Sized,
+    {
+        self.add_prop(name, prop);
+        self
+    }
 
     /// Only log from modules with an explicit module level filter, useful for quieting down
     /// dependencies.
