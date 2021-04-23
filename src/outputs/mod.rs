@@ -1,4 +1,4 @@
-//! # Output
+//! # Outputs
 //! Outputs tell `tacit` where to send the logged information.
 //! Examples include the console, a file, a database, etc.
 

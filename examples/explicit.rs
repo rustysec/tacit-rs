@@ -1,7 +1,7 @@
-use tacit::Logger;
+use tacit::{JsonFormatter, SimpleConsoleOutput};
 
 fn main() {
-    let json_logger = tacit::JsonLogger::default()
+    let json_logger = tacit::Logger::<SimpleConsoleOutput, JsonFormatter>::default()
         .with_module_level_filter("explicit".into(), log::LevelFilter::Trace)
         .with_explicit_logging();
 
