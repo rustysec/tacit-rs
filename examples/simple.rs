@@ -1,7 +1,7 @@
-use tacit::Logger;
+use tacit::{SimpleConsoleOutput, SimpleFormatter};
 
 fn main() {
-    let json_logger = tacit::SimpleLogger::default()
+    let json_logger = tacit::Logger::<SimpleConsoleOutput, SimpleFormatter>::default()
         .with_module_level_filter("mio".into(), log::LevelFilter::Off)
         .with_module_level_filter("tokio".into(), log::LevelFilter::Off)
         .with_module_level_filter("reqwest".into(), log::LevelFilter::Off)

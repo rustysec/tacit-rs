@@ -12,10 +12,10 @@ interface that makes discovering "how to use this" easy.
 
 ## Principals
 There are two main components that make up the `tacit` logging system.
-These are [loggers](#loggers) and [outputs](#outputs).
+These are [formatters](#formatters) and [outputs](#outputs).
 
 
-### Loggers
+### Formatters 
 Loggers control the output format of the entries. This can be a simple
 line of text, or something more structured like JSON or CEF.
 
