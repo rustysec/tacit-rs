@@ -1,6 +1,8 @@
 tacit
 =====
-An obvious logging library for the rust [log](https://crates.io/crates/log) ecosystem.
+[![Build Status](https://github.com/rustysec/tacit-rs/workflows/Build/badge.svg)](https://github.com/rustysec/tacit-rs/actions)
+
+An obvious logging library for Rust's [log](https://crates.io/crates/log) ecosystem.
 
 ## Overview
 There are a lot of great and very useful logging libraries for Rust.
