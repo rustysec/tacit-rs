@@ -25,3 +25,34 @@ line of text, or something more structured like JSON or CEF.
 ### Outputs
 Outputs dictate where the log entries arrive. Examples include the console,
 a file, an archive, a database, etc.
+
+
+## Usage
+`tacit` has a very simple API surface, meant to provide enough options to be 
+usefully without overwhelming developers. 
+
+[Formatters](#formatters) and [Outputs](#outputs) both implement `Default` so
+you can be reasonably assured that logging will work with sane defaults. A
+simple setup involves something like this:
+
+```rust
+use tacit::{JsonFormatter, Logger, SimpleConsoleOutput};
+
+let json_logger = Logger::<SimpleConsoleOutput, JsonFormatter>::default();
+tacit::new().with_logger(json_logger).log().unwrap();
+log::info!("logging some info!");
+```
+
+In the event that a [formatter](#formatters) or [output](#outputs) has specific
+configuration options, they can be used like this:
+
+```rust
+use tacit::{JsonFormatter, Logger, SimpleConsoleOutput};
+
+let output = SimpleConsoleOutput::default(); // with options...
+let formatter = JsonFormatter::default(); // with options...
+let json_logger = Logger::new(output, formatter);
+tacit::new().with_logger(json_logger).log().unwrap();
+log::info!("logging some info!");
+```
+
