@@ -1,7 +1,7 @@
 //! # Simple Formatter
 //! Structures log output in a simple parsable format.
 //!
-//! ```
+//! ```sh
 //! timeStamp="2021-03-29T15:16:25.683809406+00:00" level="INFO" msg="logging a thing"
 //! ```
 
@@ -39,7 +39,7 @@ impl StaticProperty {
     pub fn simple_value(&self) -> String {
         match self {
             Self::String(v) => format!("\"{}\"", v.to_string()),
-            Self::Number(v) => format!("{}", v),
+            Self::Number(v) => v.to_string(),
             Self::Null => String::new(),
         }
     }
