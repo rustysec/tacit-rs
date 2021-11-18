@@ -1,6 +1,6 @@
 tacit
 =====
-[![Build Status](https://github.com/rustysec/tacit-rs/workflows/Build/badge.svg)](https://github.com/rustysec/tacit-rs/actions)
+![Build Status](https://github.com/rustysec/tacit-rs/workflows/Build/badge.svg)
 
 An obvious logging library for Rust's [log](https://crates.io/crates/log) ecosystem.
 
