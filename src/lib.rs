@@ -62,7 +62,14 @@ mod outputs;
 mod properties;
 
 pub use crate::{formatters::*, logger::*, outputs::*, properties::*};
+pub use log::LevelFilter;
 use log::{Log, Metadata, Record};
+
+#[cfg(feature = "kv")]
+pub use kv_log_macro::{debug, error, info, trace, warn};
+
+#[cfg(not(feature = "kv"))]
+pub use log::{debug, error, info, trace, warn};
 
 /// Main logger abstraction for Tacit. Combines one or more `Logger` implementations.
 pub struct TacitLogger<O: TacitOutput, F: TacitFormatter> {

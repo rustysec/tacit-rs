@@ -22,3 +22,44 @@ pub trait TacitFormatter: Default + Send + Sync {
     ) where
         O: TacitOutput;
 }
+
+#[cfg(feature = "kv")]
+pub struct KvVisitor(serde_json::Value);
+
+#[cfg(feature = "kv")]
+impl KvVisitor {
+    pub fn new(item: serde_json::Value) -> Self {
+        Self(item)
+    }
+
+    pub fn inner(self) -> serde_json::Value {
+        self.0
+    }
+}
+
+#[cfg(feature = "kv")]
+impl<'kvs> log::kv::Visitor<'kvs> for KvVisitor {
+    fn visit_pair(
+        &mut self,
+        key: log::kv::Key<'kvs>,
+        value: log::kv::Value<'kvs>,
+    ) -> Result<(), log::kv::Error> {
+        let result = if let Some(value) = value.to_borrowed_str() {
+            serde_json::Value::String(value.to_string())
+        } else if let Some(value) = value.to_bool() {
+            serde_json::Value::Bool(value)
+        } else if let Some(value) = value.to_i64() {
+            serde_json::Value::Number(serde_json::Number::from(value))
+        } else if let Some(value) = value.to_f64() {
+            serde_json::Number::from_f64(value)
+                .map(serde_json::Value::Number)
+                .unwrap_or(serde_json::Value::Null)
+        } else {
+            serde_json::Value::Null
+        };
+
+        self.0[key.to_string()] = result;
+
+        Ok(())
+    }
+}

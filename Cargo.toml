@@ -1,6 +1,6 @@
 [package]
 name = "tacit"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["rustysec <russ@infocyte.com>"]
 edition = "2018"
 description = "A simple yet powerful logging framework focused on obviousness and structure."
@@ -11,6 +11,7 @@ log = { version = "0.4", features = [ "std" ] }
 parking_lot = { version = "0.11" }
 serde = { version = "1", features = [ "derive"], optional = true }
 serde_json = { version = "1", optional = true }
+kv-log-macro = { version = "1", optional = true }
 
 [dev-dependencies]
 reqwest = { version = "0.11", default-features = false, features = [ "rustls-tls", "blocking" ] }
@@ -19,3 +20,4 @@ reqwest = { version = "0.11", default-features = false, features = [ "rustls-tls
 default = [ "json", "threaded" ]
 json = [ "serde", "serde_json" ]
 threaded = []
+kv = [ "kv-log-macro", "log/kv_unstable" ]

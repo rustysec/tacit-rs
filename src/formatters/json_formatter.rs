@@ -30,6 +30,20 @@ impl TacitFormatter for JsonFormatter {
             item[prop.0.clone()] = prop.1.json_value(record);
         }
 
+        #[cfg(feature = "kv")]
+        {
+            let source = record.key_values();
+            let mut visitor = super::KvVisitor::new(item);
+
+            for _idx in 0..source.count() {
+                if source.visit(&mut visitor).is_err() {
+                    break;
+                }
+            }
+
+            item = visitor.inner();
+        }
+
         writeln!(
             output,
             "{}",
