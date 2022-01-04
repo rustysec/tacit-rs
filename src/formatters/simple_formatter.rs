@@ -18,6 +18,7 @@ impl TacitFormatter for SimpleFormatter {
         record: &Record,
         msg_prop: &str,
         default_props: &[(String, Property)],
+        ignore_empty_props: bool,
     ) where
         O: TacitOutput,
     {
@@ -26,7 +27,11 @@ impl TacitFormatter for SimpleFormatter {
         let mut item = String::new();
 
         for prop in default_props {
-            item = format!("{} {}={}", item, prop.0, prop.1.simple_value(record));
+            let value = prop.1.simple_value(record);
+            if ignore_empty_props && value.is_empty() {
+                continue;
+            }
+            item = format!("{} {}={}", item, prop.0, value);
         }
 
         item = format!("{} {}=\"{}\"", item, msg_prop, msg);
@@ -38,7 +43,7 @@ impl TacitFormatter for SimpleFormatter {
 impl StaticProperty {
     pub fn simple_value(&self) -> String {
         match self {
-            Self::String(v) => format!("\"{}\"", v.to_string()),
+            Self::String(v) => format!("\"{}\"", v),
             Self::Number(v) => v.to_string(),
             Self::Null => String::new(),
         }

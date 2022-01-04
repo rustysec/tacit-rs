@@ -1,6 +1,6 @@
 [package]
 name = "tacit"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["rustysec <russ@infocyte.com>"]
 edition = "2018"
 description = "A simple yet powerful logging framework focused on obviousness and structure."

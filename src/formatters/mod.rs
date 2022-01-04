@@ -19,6 +19,7 @@ pub trait TacitFormatter: Default + Send + Sync {
         record: &Record,
         msg_prop: &str,
         default_props: &[(String, Property)],
+        ignore_empty_props: bool,
     ) where
         O: TacitOutput;
 }

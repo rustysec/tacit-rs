@@ -19,6 +19,7 @@ impl TacitFormatter for JsonFormatter {
         record: &Record,
         msg_prop: &str,
         default_props: &[(String, Property)],
+        ignore_empty_props: bool,
     ) where
         O: TacitOutput,
     {
@@ -27,7 +28,11 @@ impl TacitFormatter for JsonFormatter {
         let mut item = json!({ msg_prop: line });
 
         for prop in default_props {
-            item[prop.0.clone()] = prop.1.json_value(record);
+            let value = prop.1.json_value(record);
+            if ignore_empty_props && matches!(value, Value::Null) {
+                continue;
+            }
+            item[prop.0.clone()] = value;
         }
 
         #[cfg(feature = "kv")]

@@ -23,24 +23,6 @@ impl From<&str> for StaticProperty {
     }
 }
 
-impl From<Option<String>> for StaticProperty {
-    fn from(s: Option<String>) -> Self {
-        match s {
-            Some(s) => Self::String(s),
-            None => Self::Null,
-        }
-    }
-}
-
-impl From<Option<&str>> for StaticProperty {
-    fn from(s: Option<&str>) -> Self {
-        match s {
-            Some(s) => Self::String(s.to_string()),
-            None => Self::Null,
-        }
-    }
-}
-
 impl From<i64> for StaticProperty {
     fn from(n: i64) -> Self {
         Self::Number(n)
@@ -50,6 +32,15 @@ impl From<i64> for StaticProperty {
 impl From<u32> for StaticProperty {
     fn from(n: u32) -> Self {
         Self::Number(n as i64)
+    }
+}
+
+impl<T: Into<StaticProperty>> From<Option<T>> for StaticProperty {
+    fn from(input: Option<T>) -> Self {
+        match input {
+            None => Self::Null,
+            Some(value) => value.into(),
+        }
     }
 }
 

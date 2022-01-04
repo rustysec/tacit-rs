@@ -16,6 +16,7 @@ pub struct Logger<O: TacitOutput, F: TacitFormatter> {
     module_levels: HashMap<String, LevelFilter>,
     sorted_module_levels: Vec<(String, LevelFilter)>,
     explicit: bool,
+    ignore_empty_props: bool,
 }
 
 impl<O: TacitOutput, F: TacitFormatter> Default for Logger<O, F> {
@@ -43,6 +44,7 @@ impl<O: TacitOutput, F: TacitFormatter> Logger<O, F> {
             module_levels: HashMap::new(),
             sorted_module_levels: Vec::new(),
             explicit: false,
+            ignore_empty_props: false,
         }
     }
 }
@@ -50,8 +52,13 @@ impl<O: TacitOutput, F: TacitFormatter> Logger<O, F> {
 impl<O: TacitOutput, F: TacitFormatter> Log for Logger<O, F> {
     fn log(&self, record: &Record) {
         let mut output = self.output.lock();
-        self.formatter
-            .log(&mut *output, record, &self.msg_prop, &self.default_props);
+        self.formatter.log(
+            &mut *output,
+            record,
+            &self.msg_prop,
+            &self.default_props,
+            self.ignore_empty_props,
+        );
     }
 
     fn enabled(&self, metadata: &Metadata) -> bool {
@@ -87,6 +94,7 @@ impl<O: TacitOutput, F: TacitFormatter> Logger<O, F> {
     }
 
     /// Set the `LevelFilter` for the `Logger`, useful for chaining operations
+    #[must_use]
     pub fn with_level_filter(mut self, level: log::LevelFilter) -> Self
     where
         Self: Sized,
@@ -105,6 +113,7 @@ impl<O: TacitOutput, F: TacitFormatter> Logger<O, F> {
     }
 
     /// Set the `LevelFilter` for a particular module name. Useful for chaining operations.
+    #[must_use]
     pub fn with_module_level_filter(mut self, module: String, level: log::LevelFilter) -> Self
     where
         Self: Sized,
@@ -114,6 +123,7 @@ impl<O: TacitOutput, F: TacitFormatter> Logger<O, F> {
     }
 
     /// Add a dynamic property to the logging output. Useful for chaining operations.
+    #[must_use]
     pub fn with_fn_prop(mut self, name: String, prop: fn(&Record) -> StaticProperty) -> Self
     where
         Self: Sized,
@@ -134,6 +144,7 @@ impl<O: TacitOutput, F: TacitFormatter> Logger<O, F> {
     }
 
     /// Add a static property to the logging output. Useful for chaining operations.
+    #[must_use]
     pub fn with_prop(mut self, name: String, prop: StaticProperty) -> Self
     where
         Self: Sized,
@@ -150,11 +161,27 @@ impl<O: TacitOutput, F: TacitFormatter> Logger<O, F> {
 
     /// Only log from modules with an explicit module level filter, useful for quieting down
     /// dependencies.
+    #[must_use]
     pub fn with_explicit_logging(mut self) -> Self
     where
         Self: Sized,
     {
         self.explicit_logging();
+        self
+    }
+
+    /// Only log props with a value, if they resolve to a `None` (null) value they will be omitted.
+    pub fn ignore_empty_props(&mut self) {
+        self.ignore_empty_props = true;
+    }
+
+    /// Only log props with a value, if they resolve to a `None` (null) value they will be omitted.
+    #[must_use]
+    pub fn with_ignore_empty_props(mut self) -> Self
+    where
+        Self: Sized,
+    {
+        self.ignore_empty_props();
         self
     }
 

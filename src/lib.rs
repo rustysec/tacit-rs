@@ -92,6 +92,7 @@ pub fn new<O: TacitOutput, F: TacitFormatter>() -> TacitLogger<O, F> {
 
 impl<O: 'static + TacitOutput, F: 'static + TacitFormatter> TacitLogger<O, F> {
     /// Add a logger to the pile
+    #[must_use]
     pub fn with_logger(mut self, logger: Logger<O, F>) -> Self {
         self.max_level = std::cmp::max(self.max_level, logger.level_filter());
         self.loggers.push(Box::new(logger.finalize()));
